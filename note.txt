@@ -1,0 +1,186 @@
+yfinance data 
+
+using LLM to filture out unrelevant features
+
+"The following list is an index of the financial statistic of cashflow of company A, please filter these indexes, and choose only the index that are relevance for using as parameter in ML prediction for the risk level of the company A's stock"
+
+---------------------------------------------------
+
+**cashflow**
+
+Index(['Free Cash Flow', 'Repurchase Of Capital Stock', 'Repayment Of Debt',
+       'Issuance Of Debt', 'Issuance Of Capital Stock', 'Capital Expenditure',
+       'Interest Paid Supplemental Data', 'Income Tax Paid Supplemental Data',
+       'End Cash Position', 'Beginning Cash Position', 'Changes In Cash',
+       'Financing Cash Flow', 'Cash Flow From Continuing Financing Activities',
+       'Net Other Financing Charges', 'Cash Dividends Paid',
+       'Common Stock Dividend Paid', 'Net Common Stock Issuance',
+       'Common Stock Payments', 'Common Stock Issuance',
+       'Net Issuance Payments Of Debt', 'Net Short Term Debt Issuance',
+       'Net Long Term Debt Issuance', 'Long Term Debt Payments',
+       'Long Term Debt Issuance', 'Investing Cash Flow',
+       'Cash Flow From Continuing Investing Activities',
+       'Net Other Investing Changes', 'Net Investment Purchase And Sale',
+       'Sale Of Investment', 'Purchase Of Investment',
+       'Net Business Purchase And Sale', 'Purchase Of Business',
+       'Net PPE Purchase And Sale', 'Purchase Of PPE', 'Operating Cash Flow',
+       'Cash Flow From Continuing Operating Activities',
+       'Change In Working Capital', 'Change In Other Working Capital',
+       'Change In Other Current Liabilities', 'Change In Other Current Assets',
+       'Change In Payables And Accrued Expense', 'Change In Payable',
+       'Change In Account Payable', 'Change In Inventory',
+       'Change In Receivables', 'Changes In Account Receivables',
+       'Other Non Cash Items', 'Stock Based Compensation', 'Deferred Tax',
+       'Deferred Income Tax', 'Depreciation Amortization Depletion',
+       'Depreciation And Amortization',
+       'Net Income From Continuing Operations'],
+      dtype='object')
+
+Free Cash Flow – Measures the cash available after capital expenditures, reflecting the company's ability to generate cash.
+Repayment Of Debt – Indicates how much the company is paying towards its outstanding debt.
+Issuance Of Debt – Shows the amount of new debt being issued by the company, which can indicate increasing financial risk.
+Capital Expenditure – Provides insight into the company's investment in fixed assets, affecting long-term financial health.
+Interest Paid Supplemental Data – Reflects the amount being spent on interest payments, which can affect cash flow and financial stability.
+Income Tax Paid Supplemental Data – Indicates tax obligations and potential cash outflows.
+Changes In Cash – Reflects overall changes in the company’s cash position over a period.
+Financing Cash Flow – Represents cash flows related to financing activities, indicating the company's reliance on external funding.
+Net Short Term Debt Issuance – Indicates short-term financial risk based on debt issuance.
+Net Long Term Debt Issuance – Provides insights into long-term financial risk.
+Operating Cash Flow – Reflects cash generated from the company’s core business operations, a critical indicator of financial health.
+Change In Working Capital – Shows changes in the company’s operational liquidity.
+Change In Inventory – Indicates potential liquidity and operational efficiency concerns.
+Change In Receivables – Reflects potential issues with liquidity, depending on the company's credit policies.
+Other indicators like stock dividends, stock issuance, or investment flows may provide useful insights but are generally less directly connected to assessing financial risk based on cash flows and debt management.
+
+relevant_indexes = [
+    'Free Cash Flow',
+    'Repayment Of Debt',
+    'Issuance Of Debt',
+    'Capital Expenditure',
+    'Interest Paid Supplemental Data',
+    'Income Tax Paid Supplemental Data',
+    'Changes In Cash',
+    'Financing Cash Flow',
+    'Net Short Term Debt Issuance',
+    'Net Long Term Debt Issuance',
+    'Operating Cash Flow',
+    'Change In Working Capital',
+    'Change In Inventory',
+    'Change In Receivables'
+]
+
+---------------------------------------------------
+
+**balance sheet**
+
+Index(['Treasury Shares Number', 'Ordinary Shares Number', 'Share Issued',
+       'Net Debt', 'Total Debt', 'Tangible Book Value', 'Invested Capital',
+       'Working Capital', 'Net Tangible Assets', 'Capital Lease Obligations',
+       'Common Stock Equity', 'Total Capitalization',
+       'Total Equity Gross Minority Interest', 'Stockholders Equity',
+       'Gains Losses Not Affecting Retained Earnings',
+       'Other Equity Adjustments', 'Retained Earnings', 'Capital Stock',
+       'Common Stock', 'Total Liabilities Net Minority Interest',
+       'Total Non Current Liabilities Net Minority Interest',
+       'Other Non Current Liabilities', 'Tradeand Other Payables Non Current',
+       'Long Term Debt And Capital Lease Obligation',
+       'Long Term Capital Lease Obligation', 'Long Term Debt',
+       'Current Liabilities', 'Other Current Liabilities',
+       'Current Deferred Liabilities', 'Current Deferred Revenue',
+       'Current Debt And Capital Lease Obligation',
+       'Current Capital Lease Obligation', 'Current Debt',
+       'Other Current Borrowings', 'Commercial Paper',
+       'Payables And Accrued Expenses', 'Payables', 'Total Tax Payable',
+       'Income Tax Payable', 'Accounts Payable', 'Total Assets',
+       'Total Non Current Assets', 'Other Non Current Assets',
+       'Non Current Deferred Assets', 'Non Current Deferred Taxes Assets',
+       'Investments And Advances', 'Other Investments',
+       'Investmentin Financial Assets', 'Available For Sale Securities',
+       'Net PPE', 'Accumulated Depreciation', 'Gross PPE', 'Leases',
+       'Other Properties', 'Machinery Furniture Equipment',
+       'Land And Improvements', 'Properties', 'Current Assets',
+       'Other Current Assets', 'Inventory', 'Receivables', 'Other Receivables',
+       'Accounts Receivable',
+       'Cash Cash Equivalents And Short Term Investments',
+       'Other Short Term Investments', 'Cash And Cash Equivalents',
+       'Cash Equivalents', 'Cash Financial'],
+      dtype='object')
+
+refined_indexes_balance_sheet = [
+    'Net Debt',                        # Summarizes debt after accounting for cash.
+    'Tangible Book Value',             # Provides the value of tangible assets, excluding intangibles.
+    'Working Capital',                 # Reflects liquidity and short-term financial health.
+    'Common Stock Equity',             # Represents shareholder equity, important for financial stability.
+    'Total Capitalization',            # Gives a full picture of the company's capital structure (debt + equity).
+    'Stockholders Equity',             # Reflects the overall value attributable to shareholders.
+    'Total Liabilities Net Minority Interest',  # Focuses on total liabilities, crucial for understanding debt exposure.
+    'Long Term Debt',                  # Key indicator of long-term financial risk.
+    'Current Liabilities',             # Indicates short-term financial obligations, impacting liquidity.
+    'Payables And Accrued Expenses',   # Shows operational liabilities, impacting short-term liquidity.
+    'Total Assets',                    # Reflects the company's total resources and overall stability.
+    'Net PPE',                         # Provides the value of physical assets, crucial for long-term solvency.
+    'Receivables',                     # Key indicator of liquidity and credit risk.
+    'Cash And Cash Equivalents'        # Measures immediate liquidity and the ability to cover short-term obligations.
+]
+
+-------------
+
+income stmt
+
+Index(['Tax Effect Of Unusual Items', 'Tax Rate For Calcs',
+       'Normalized EBITDA',
+       'Net Income From Continuing Operation Net Minority Interest',
+       'Reconciled Depreciation', 'Reconciled Cost Of Revenue', 'EBITDA',
+       'EBIT', 'Net Interest Income', 'Interest Expense', 'Interest Income',
+       'Normalized Income',
+       'Net Income From Continuing And Discontinued Operation',
+       'Total Expenses', 'Total Operating Income As Reported',
+       'Diluted Average Shares', 'Basic Average Shares', 'Diluted EPS',
+       'Basic EPS', 'Diluted NI Availto Com Stockholders',
+       'Net Income Common Stockholders', 'Net Income',
+       'Net Income Including Noncontrolling Interests',
+       'Net Income Continuous Operations', 'Tax Provision', 'Pretax Income',
+       'Other Income Expense', 'Other Non Operating Income Expenses',
+       'Net Non Operating Interest Income Expense',
+       'Interest Expense Non Operating', 'Interest Income Non Operating',
+       'Operating Income', 'Operating Expense', 'Research And Development',
+       'Selling General And Administration', 'Gross Profit', 'Cost Of Revenue',
+       'Total Revenue', 'Operating Revenue'],
+      dtype='object')
+
+EBITDA and EBIT are kept because they provide a measure of core profitability and operating performance, which are crucial for assessing stability and volatility.
+Net Income reflects the company’s profitability, directly impacting stock price movements. It’s a key metric for understanding volatility.
+Total Revenue and Gross Profit indicate top-line growth and profit margins, which affect the company's earnings and price stability.
+Operating Income and Operating Expense offer insights into operational performance and efficiency, which can reflect volatility in stock prices if unstable.
+Interest Expense and Net Interest Income are essential for assessing financial leverage, which contributes to risk.
+Cost of Revenue shows the direct cost associated with generating revenue, affecting margins and volatility.
+Research and Development and Selling General and Administration are typically high for companies with more innovation or heavy sales expenses, which can cause stock volatility.
+Tax Provision and Pretax Income are essential because tax fluctuations and pretax income can cause swings in net profitability.
+Other Income Expense is included because non-operating gains or losses can significantly affect net income, causing potential price swings.
+Total Expenses provides an overall picture of cost structure, critical for understanding how rising or falling expenses affect profitability and risk.
+
+
+relevant_indexes_income_statement = [
+    'EBITDA',                       # Reflects core operating profitability, key for assessing financial stability.
+    'EBIT',                         # Measures operating profit, which can highlight volatility in earnings.
+    'Net Income',                   # Provides a bottom-line view of profitability, linked to stock price stability.
+    'Total Revenue',                # High volatility in revenue can lead to stock price fluctuations.
+    'Gross Profit',                 # Indicates profitability after direct costs, critical for understanding margins.
+    'Operating Income',             # Represents the profit from operations, key for assessing operational risk.
+    'Operating Expense',            # High or fluctuating expenses can indicate risk in operational efficiency.
+    'Interest Expense',             # Shows the cost of borrowing, which can affect financial risk if interest expenses are high.
+    'Net Interest Income',          # Important for companies where interest income significantly impacts profitability.
+    'Cost Of Revenue',              # Reflects the direct costs related to revenue, key for evaluating margins.
+    'Research And Development',     # High R&D spending can indicate volatility, especially for tech companies.
+    'Selling General And Administration',  # Significant variations here can indicate operational inefficiency or volatility.
+    'Tax Provision',                # Changes in tax provision can impact net income volatility.
+    'Pretax Income',                # Represents income before tax, providing insight into operational stability.
+    'Other Income Expense',         # Fluctuations here can contribute to overall earnings volatility.
+    'Total Expenses'                # Provides a comprehensive view of the company's cost structure.
+]
+
+
+
+-------------------
+
+https://chatgpt.com/share/670f34b9-420c-800a-a36c-2521bf05d7d9 
